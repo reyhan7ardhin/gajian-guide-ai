@@ -130,7 +130,7 @@
             padding-left: 24px;
             position: relative;
         }
-        .chaos kalo ga pakai AI-card li::before {
+        .chaos-card li::before {
             content: "✕";
             position: absolute;
             left: 0;
@@ -237,6 +237,39 @@
             align-self: flex-start;
         }
 
+        /* Places Table Section */
+        .table-container {
+            background-color: var(--surface-color);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 60px;
+            overflow-x: auto;
+        }
+        table#places {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        table#places th, table#places td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        table#places th {
+            background-color: #2a2a2a;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        table#places td a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        table#places td a:hover {
+            text-decoration: underline;
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -319,6 +352,17 @@
             </div>
         </section>
 
+        <!-- PLACES DATA TABLE SECTION -->
+        <h2 class="section-title">Data Rekomendasi Lokasi</h2>
+        <section class="table-container">
+            <table id="places">
+                <thead>
+                    <tr><th>Nama</th><th>Kategori</th><th>Rating</th><th>Review</th><th>Kota</th><th>Telepon</th><th>Maps</th></tr>
+                </thead>
+                <tbody><tr><td colspan="7">Memuat data...</td></tr></tbody>
+            </table>
+        </section>
+
         <!-- 5. FOOTER & CTA -->
         <footer>
             <h2 style="margin-bottom: 20px; font-size: 1.5rem;">Mulai Bangun Fondasimu Sekarang</h2>
@@ -375,6 +419,50 @@
                 isTyping = false;
             }, 1500);
         }
+    </script>
+
+    <!-- JavaScript for Supabase Integration -->
+    <script>
+        const SUPABASE_URL = 'https://nmwdlitmuvbbxjjyzzyk.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_RA7VdLHEDBAsijWJQH4IOA_o_pgEnJK'; // publishable key, BUKAN secret key
+
+        async function loadPlaces() {
+            const tbody = document.querySelector('#places tbody');
+            try {
+                const res = await fetch(
+                    SUPABASE_URL + '/rest/v1/places?select=*&order=reviews_count.desc.nullslast&limit=100',
+                    { headers: { apikey: SUPABASE_KEY } }
+                );
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const rows = await res.json();
+
+                tbody.replaceChildren();
+                for (const p of rows) {
+                    const tr = document.createElement('tr');
+                    for (const v of [p.title, p.category_name, p.total_score, p.reviews_count, p.city, p.phone]) {
+                        const td = document.createElement('td');
+                        td.textContent = v ?? '-';
+                        tr.appendChild(td);
+                    }
+                    const td = document.createElement('td');
+                    if (p.url && p.url.startsWith('https://')) {
+                        const a = document.createElement('a');
+                        a.href = p.url;
+                        a.target = '_blank';
+                        a.rel = 'noopener';
+                        a.textContent = 'Buka';
+                        td.appendChild(a);
+                    }
+                    tr.appendChild(td);
+                    tbody.appendChild(tr);
+                }
+                if (!rows.length) tbody.innerHTML = '<tr><td colspan="7">Belum ada data.</td></tr>';
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="7">Gagal memuat data.</td></tr>';
+                console.error(e);
+            }
+        }
+        loadPlaces();
     </script>
 </body>
 </html>
