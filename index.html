@@ -238,6 +238,80 @@
         }
 
         /* Places Table Section */
+        .places-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .db-status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            background-color: #2a2a2a;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        .db-status-badge.connected {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .db-status-badge.failed {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .db-status-dot {
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: var(--text-muted);
+        }
+        .db-status-badge.connected .db-status-dot {
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        .db-status-badge.failed .db-status-dot {
+            background-color: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .places-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 240px;
+            padding: 10px 16px;
+            background-color: #181818;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--accent-color);
+        }
+        .places-counter {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
         .table-container {
             background-color: var(--surface-color);
             border-radius: 12px;
@@ -255,19 +329,57 @@
         table#places th, table#places td {
             padding: 12px;
             border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
         }
         table#places th {
             background-color: #2a2a2a;
             color: var(--accent-color);
             font-weight: 600;
+            white-space: nowrap;
         }
-        table#places td a {
+        .category-badge {
+            display: inline-block;
+            background-color: #2a2a2a;
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--accent-color);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .phone-link {
+            color: var(--text-main);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .phone-link:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+        .btn-maps-outline {
+            display: inline-block;
+            padding: 5px 12px;
+            border: 1px solid var(--accent-color);
             color: var(--accent-color);
             text-decoration: none;
+            border-radius: 6px;
             font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.2s;
         }
-        table#places td a:hover {
-            text-decoration: underline;
+        .btn-maps-outline:hover {
+            background-color: var(--accent-color);
+            color: #000;
         }
 
         /* Footer */
@@ -353,8 +465,20 @@
         </section>
 
         <!-- PLACES DATA TABLE SECTION -->
-        <h2 class="section-title">Data Rekomendasi Lokasi</h2>
+        <section class="places-header">
+            <div id="dbStatusBadge" class="db-status-badge">
+                <div class="db-status-dot"></div>
+                <span id="dbStatusText">Menghubungkan ke database...</span>
+            </div>
+            <h2 class="section-title" style="margin-bottom: 4px;">Daftar Rekomendasi Tempat</h2>
+            <p class="section-subtitle">Data tempat dan mitra yang tersinkronisasi otomatis langsung dari database Supabase.</p>
+        </section>
+
         <section class="table-container">
+            <div class="places-controls">
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari nama, kota, atau kategori..." oninput="filterPlaces()">
+                <div class="places-counter" id="placesCounter">0 tempat</div>
+            </div>
             <table id="places">
                 <thead>
                     <tr><th>Nama</th><th>Kategori</th><th>Rating</th><th>Review</th><th>Kota</th><th>Telepon</th><th>Maps</th></tr>
@@ -421,47 +545,143 @@
         }
     </script>
 
-    <!-- JavaScript for Supabase Integration -->
+    <!-- JavaScript for Supabase Integration & Dynamic Table -->
     <script>
         const SUPABASE_URL = 'https://nmwdlitmuvbbxjjyzzyk.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_RA7VdLHEDBAsijWJQH4IOA_o_pgEnJK'; // publishable key, BUKAN secret key
 
+        let allPlaces = [];
+
         async function loadPlaces() {
             const tbody = document.querySelector('#places tbody');
+            const badge = document.getElementById('dbStatusBadge');
+            const badgeText = document.getElementById('dbStatusText');
+
             try {
                 const res = await fetch(
                     SUPABASE_URL + '/rest/v1/places?select=*&order=reviews_count.desc.nullslast&limit=100',
                     { headers: { apikey: SUPABASE_KEY } }
                 );
                 if (!res.ok) throw new Error('HTTP ' + res.status);
-                const rows = await res.json();
+                allPlaces = await res.json();
 
-                tbody.replaceChildren();
-                for (const p of rows) {
-                    const tr = document.createElement('tr');
-                    for (const v of [p.title, p.category_name, p.total_score, p.reviews_count, p.city, p.phone]) {
-                        const td = document.createElement('td');
-                        td.textContent = v ?? '-';
-                        tr.appendChild(td);
-                    }
-                    const td = document.createElement('td');
-                    if (p.url && p.url.startsWith('https://')) {
-                        const a = document.createElement('a');
-                        a.href = p.url;
-                        a.target = '_blank';
-                        a.rel = 'noopener';
-                        a.textContent = 'Buka';
-                        td.appendChild(a);
-                    }
-                    tr.appendChild(td);
-                    tbody.appendChild(tr);
-                }
-                if (!rows.length) tbody.innerHTML = '<tr><td colspan="7">Belum ada data.</td></tr>';
+                badge.className = 'db-status-badge connected';
+                badgeText.textContent = 'Database Terhubung (Supabase)';
+
+                renderPlaces(allPlaces);
             } catch (e) {
-                tbody.innerHTML = '<tr><td colspan="7">Gagal memuat data.</td></tr>';
+                badge.className = 'db-status-badge failed';
+                badgeText.textContent = 'Gagal terhubung ke database';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Gagal memuat data.</td></tr>';
+                document.getElementById('placesCounter').textContent = '0 tempat';
                 console.error(e);
             }
         }
+
+        function renderPlaces(rows) {
+            const tbody = document.querySelector('#places tbody');
+            const counter = document.getElementById('placesCounter');
+            
+            tbody.replaceChildren();
+            counter.textContent = `${rows.length} tempat`;
+
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">Tidak ada tempat yang cocok.</td></tr>';
+                return;
+            }
+
+            for (const p of rows) {
+                const tr = document.createElement('tr');
+                
+                // 1. Nama
+                const tdTitle = document.createElement('td');
+                tdTitle.textContent = p.title ?? '-';
+                tdTitle.style.fontWeight = '600';
+                tr.appendChild(tdTitle);
+
+                // 2. Kategori (Badge)
+                const tdCategory = document.createElement('td');
+                if (p.category_name) {
+                    const badge = document.createElement('span');
+                    badge.className = 'category-badge';
+                    badge.textContent = p.category_name;
+                    tdCategory.appendChild(badge);
+                } else {
+                    tdCategory.textContent = '-';
+                }
+                tr.appendChild(tdCategory);
+
+                // 3. Rating (Star Badge)
+                const tdRating = document.createElement('td');
+                if (p.total_score) {
+                    const badge = document.createElement('span');
+                    badge.className = 'rating-badge';
+                    badge.innerHTML = `★ ${p.total_score}`;
+                    tdRating.appendChild(badge);
+                } else {
+                    tdRating.textContent = '-';
+                }
+                tr.appendChild(tdRating);
+
+                // 4. Review
+                const tdReview = document.createElement('td');
+                tdReview.textContent = p.reviews_count ? p.reviews_count.toLocaleString('id-ID') : '-';
+                tr.appendChild(tdReview);
+
+                // 5. Kota
+                const tdCity = document.createElement('td');
+                tdCity.textContent = p.city ?? '-';
+                tr.appendChild(tdCity);
+
+                // 6. Telepon (tel: Link)
+                const tdPhone = document.createElement('td');
+                if (p.phone) {
+                    const aPhone = document.createElement('a');
+                    aPhone.href = `tel:${p.phone.replace(/[^0-9+]/g, '')}`;
+                    aPhone.className = 'phone-link';
+                    aPhone.textContent = p.phone;
+                    tdPhone.appendChild(aPhone);
+                } else {
+                    tdPhone.textContent = '-';
+                }
+                tr.appendChild(tdPhone);
+
+                // 7. Maps (Outline Button)
+                const tdMaps = document.createElement('td');
+                if (p.url && p.url.startsWith('https://')) {
+                    const aMaps = document.createElement('a');
+                    aMaps.href = p.url;
+                    aMaps.target = '_blank';
+                    aMaps.rel = 'noopener';
+                    aMaps.className = 'btn-maps-outline';
+                    aMaps.textContent = 'Maps ↗';
+                    tdMaps.appendChild(aMaps);
+                } else {
+                    tdMaps.textContent = '-';
+                }
+                tr.appendChild(tdMaps);
+
+                tbody.appendChild(tr);
+            }
+        }
+
+        function filterPlaces() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderPlaces(allPlaces);
+                return;
+            }
+
+            const filtered = allPlaces.filter(p => {
+                const title = (p.title || '').toLowerCase();
+                const city = (p.city || '').toLowerCase();
+                const category = (p.category_name || '').toLowerCase();
+                return title.includes(query) || city.includes(query) || category.includes(query);
+            });
+
+            renderPlaces(filtered);
+        }
+
         loadPlaces();
     </script>
 </body>
