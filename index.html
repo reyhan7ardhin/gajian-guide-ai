@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kabarin | Pengingat Follow-up Harian untuk Bisnis Relasi</title>
+<meta name="description" content="Kabarin membantu kamu mengingat siapa yang perlu dihubungi setiap hari, lengkap dengan draf pesan yang tinggal kamu setujui.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f1b2d;--panel:#16253a;--panel2:#1c2f47;--line:#2a3d55;--text:#eef2f7;--muted:#9fb0c3;--dawn:#ffb36b;--mint:#7be0b0;--rose:#ff8f8f;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",system-ui,sans-serif;line-height:1.15}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+section{padding:56px 0 0}
+h2{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;margin-bottom:8px}
+.lead{color:var(--muted);max-width:60ch;margin-bottom:28px}
+.btn{display:inline-block;background:var(--dawn);color:#1b1305;padding:14px 26px;border-radius:999px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font:inherit;font-weight:700;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+.hero{padding:64px 0 8px;text-align:center}
+.avatar{width:84px;height:84px;border-radius:50%;background:var(--panel2);border:2px solid var(--dawn);display:grid;place-items:center;font-size:2.4rem;margin:0 auto 16px;box-shadow:0 0 40px rgba(255,179,107,.35)}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(123,224,176,.1);color:var(--mint);border:1px solid rgba(123,224,176,.3);padding:6px 14px;border-radius:999px;font-size:.85rem;font-weight:700;margin-bottom:20px}
+.hero h1{font-size:clamp(2.6rem,9vw,4.6rem);font-weight:800;letter-spacing:-.02em;margin-bottom:14px}
+.hero p{font-size:1.15rem;color:var(--muted);max-width:44ch;margin:0 auto 28px}
+.hero small{display:block;margin-top:14px;color:var(--muted);font-size:.85rem}
+.two{display:grid;gap:16px}
+@media(min-width:760px){.two{grid-template-columns:1fr 1fr}.three{grid-template-columns:repeat(3,1fr)!important}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px}
+.card h3{font-size:1.25rem;margin-bottom:12px}
+.chaos h3{color:var(--rose)}.sol h3{color:var(--mint)}
+.card ul{list-style:none}
+.card li{position:relative;padding-left:26px;margin-bottom:10px}
+.chaos li::before{content:"✕";position:absolute;left:0;color:var(--rose);font-weight:700}
+.sol li::before{content:"✓";position:absolute;left:0;color:var(--mint);font-weight:700}
+.three{display:grid;gap:16px;grid-template-columns:1fr}
+.cap .ic{font-size:1.8rem;margin-bottom:10px}
+.cap p{color:var(--muted);font-size:.95rem}
+.sim{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.sim-top{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--panel2);font-size:.85rem;color:var(--muted)}
+.tag{background:rgba(255,179,107,.15);color:var(--dawn);padding:3px 10px;border-radius:999px;font-weight:700;font-size:.78rem}
+.chat{height:340px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:#122033}
+.msg{max-width:86%;padding:11px 15px;border-radius:14px;font-size:.95rem}
+.ai{background:var(--panel2);align-self:flex-start;border-bottom-left-radius:3px}
+.me{background:var(--dawn);color:#1b1305;font-weight:500;align-self:flex-end;border-bottom-right-radius:3px}
+.dots{display:none;align-self:flex-start;color:var(--muted);font-size:.85rem;font-style:italic}
+.ctl{display:grid;gap:8px;padding:16px}
+@media(min-width:760px){.ctl{grid-template-columns:repeat(3,1fr)}}
+.sc{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:12px 14px;border-radius:10px;text-align:left;cursor:pointer;font:inherit;font-size:.9rem;transition:border-color .2s}
+.sc:hover{border-color:var(--dawn)}
+.sc b{display:block;color:var(--dawn)}
+.note{display:inline-block;margin-top:6px;color:var(--mint);font-size:.82rem}
+.bh-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.count{color:var(--muted);font-size:.9rem}
+.count b{color:var(--mint)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;width:0;background:var(--mint);transition:width .4s}
+.item{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:12px;transition:opacity .3s,border-color .3s}
+.item.done{opacity:.55;border-color:rgba(123,224,176,.4)}
+.item.skip{opacity:.4}
+.who{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4px}
+.who b{font-size:1.05rem}
+.chip{font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px}
+.ok{background:rgba(123,224,176,.12);color:var(--mint)}
+.hold{background:rgba(255,143,143,.12);color:var(--rose)}
+.why{color:var(--muted);font-size:.9rem;margin-bottom:10px}
+.draft{background:#122033;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.95rem;width:100%;color:var(--text);font-family:inherit;resize:vertical;min-height:70px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.acts button{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:8px 16px;border-radius:999px;cursor:pointer;font:inherit;font-size:.88rem;font-weight:700}
+.acts .go{background:var(--mint);color:#07281a;border-color:var(--mint)}
+.acts button:hover{border-color:var(--dawn)}
+.status{margin-top:10px;font-size:.88rem;color:var(--mint)}
+.final{display:none;text-align:center;padding:16px;color:var(--mint);font-weight:700}
+.bp{display:grid;gap:14px}
+.row{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;display:grid;gap:8px}
+@media(min-width:760px){.row{grid-template-columns:200px 1fr;gap:24px}}
+.row h3{font-size:1.1rem;color:var(--dawn)}
+.row p,.row li{color:var(--muted)}
+.row b{color:var(--text)}
+.row ul{padding-left:18px}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.node{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-weight:700;font-size:.9rem}
+.node.h{border-color:var(--mint);color:var(--mint)}
+.arr{color:var(--dawn)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chips span{background:var(--panel2);border:1px solid var(--line);padding:5px 12px;border-radius:999px;font-size:.85rem;color:var(--text)}
+footer{text-align:center;padding:72px 0 48px}
+footer h2{margin-bottom:18px}
+.ft{margin-top:26px;color:var(--muted);font-size:.85rem}
+.top{position:sticky;top:0;z-index:20;background:rgba(15,27,45,.97);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:10px 20px}
+.top .logo{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.2rem;color:var(--text);text-decoration:none}
+.btn.sm{padding:8px 18px;font-size:.88rem}
+section{scroll-margin-top:64px}
+.steps{display:grid;gap:14px}
+@media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr)}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+.step .no{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--dawn);color:#1b1305;font-weight:800;margin-bottom:10px}
+.step h3{font-size:1.05rem;margin-bottom:6px}
+.step p{color:var(--muted);font-size:.92rem}
+.eg{background:var(--panel2);border-left:3px solid var(--dawn);padding:8px 12px;border-radius:6px;margin-top:8px;font-size:.88rem;color:var(--text)}
+.faq details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px}
+.faq summary{cursor:pointer;font-weight:700}
+.faq p{color:var(--muted);margin-top:10px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<nav class="top"><a class="logo" href="#">Kabarin</a><a class="btn sm" href="https://wa.me/6285717862034?text=Halo%2C%20saya%20mau%20minta%20akses%20awal%20Kabarin" target="_blank" rel="noopener">Minta Akses Awal</a></nav>
+<div class="wrap">
+
+<header class="hero">
+  <div class="avatar" aria-hidden="true">☀️</div>
+  <div class="badge">🟢 Status: Active &amp; Ready 24/7</div>
+  <h1>Kabarin</h1>
+  <p>Setiap pagi, Kabarin mengingatkan siapa yang sebaiknya kamu hubungi hari ini, lengkap dengan draf pesannya.</p>
+  <a class="btn" href="https://wa.me/6285717862034?text=Halo%2C%20saya%20mau%20minta%20akses%20awal%20Kabarin" target="_blank" rel="noopener">Minta Akses Awal</a>
+  <small>Tahap rancangan, akses awal dibuka terbatas. Nggak ada pesan yang terkirim tanpa persetujuanmu.</small>
+</header>
+
+<section>
+  <h2>Peluang sering hilang karena lupa</h2>
+  <p class="lead">Banyak orang sebenarnya sudah punya cukup kenalan. Yang sulit adalah mengingat siapa yang perlu dihubungi, kapan, dan sebaiknya membahas apa.</p>
+  <div class="two">
+    <div class="card chaos"><h3>The Chaos</h3><ul>
+      <li>Catatan tentang tiap orang tersebar di chat dan di kepala.</li>
+      <li>Follow-up sering terlambat, atau terlewat begitu saja.</li>
+      <li>Pesan dari template terasa kaku, dan kita khawatir dianggap spam.</li>
+    </ul></div>
+    <div class="card sol"><h3>The Solution</h3><ul>
+      <li>Setiap pagi ada lima kontak yang disarankan, lengkap dengan alasannya.</li>
+      <li>Draf pesan disusun dari obrolan terakhir dengan orang tersebut.</li>
+      <li>Pesan diperiksa dulu, lalu menunggu persetujuanmu sebelum kamu kirim.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <h2>Apa yang dikerjakan Kabarin</h2>
+  <p class="lead">Pekerjaannya dibagi ke tiga bagian supaya hasilnya lebih rapi.</p>
+  <div class="three">
+    <div class="card cap"><div class="ic">🎯</div><h3>Menentukan prioritas</h3><p>Kabarin melihat sudah berapa lama kamu tidak menghubungi seseorang dan apa yang terakhir kalian bahas, lalu memilih siapa yang paling pas hari ini.</p></div>
+    <div class="card cap"><div class="ic">✍️</div><h3>Menyusun draf</h3><p>Draf ditulis dengan gaya bahasamu dan mengacu pada obrolan sebelumnya, jadi tidak terasa seperti pesan massal.</p></div>
+    <div class="card cap"><div class="ic">🛡️</div><h3>Memeriksa sebelum kirim</h3><p>Pesan yang terlalu memaksa atau berlebihan akan ditahan. Semua pesan tetap menunggu persetujuanmu (Human-in-the-Loop).</p></div>
+  </div>
+</section>
+
+<section id="cara-kerja">
+  <h2>Cara pakainya sederhana</h2>
+  <p class="lead">Kamu tidak perlu menyambungkan WhatsApp. Cukup satu chat dengan Kabarin, lalu kirim pesan lewat WhatsApp seperti biasa.</p>
+  <div class="steps">
+    <div class="step"><div class="no">1</div><h3>Catat singkat</h3><p>Setelah ngobrol dengan seseorang, ketik satu atau dua kalimat.</p><div class="eg">“Dimas lagi cari tambahan penghasilan, minggu depan baru longgar.”</div></div>
+    <div class="step"><div class="no">2</div><h3>Terima brief pagi</h3><p>Tiap pagi Kabarin mengirim daftar orang yang sebaiknya dihubungi, beserta alasan dan draf pesannya.</p></div>
+    <div class="step"><div class="no">3</div><h3>Periksa, lalu kirim</h3><p>Ubah drafnya kalau perlu. Tekan Buka di WhatsApp, lalu WhatsApp terbuka di chat orang itu dengan draf yang sudah terisi (kalau nomornya diisi). Kamu yang menekan kirim di sana.</p></div>
+    <div class="step"><div class="no">4</div><h3>Kabari hasilnya</h3><p>Satu ketukan: sudah dibalas atau belum. Dari situ Kabarin belajar supaya drafnya makin pas.</p></div>
+  </div>
+  <p class="lead" style="margin:16px 0 0">Targetnya, kamu cukup meluangkan 1-2 menit sehari.</p>
+</section>
+
+<section>
+  <h2>Coba simulasinya</h2>
+  <p class="lead">Pilih salah satu situasi di bawah ini untuk melihat cara kerjanya.</p>
+  <div class="sim">
+    <div class="sim-top"><span>Kabarin</span><span class="tag">Simulasi</span></div>
+    <div class="chat" id="chat" role="log" aria-live="polite">
+      <div class="msg ai">Selamat pagi! Saya Kabarin. Silakan pilih salah satu situasi di bawah, nanti saya tunjukkan cara kerja saya.</div>
+      <div class="dots" id="dots">Kabarin sedang mengetik…</div>
+    </div>
+    <div class="ctl">
+      <button class="sc" onclick="run(1)"><b>Brief pagi</b>“Hari ini aku sebaiknya menghubungi siapa?”</button>
+      <button class="sc" onclick="run(2)"><b>Kontak yang belum membalas</b>“Ayu belum membalas sudah 4 hari. Sebaiknya bagaimana?”</button>
+      <button class="sc" onclick="run(3)"><b>Pesan yang terlalu mendesak</b>“Tolong buatkan pesan promo untuk Rizky.”</button>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="bh-head">
+    <div><h2>Brief hari ini</h2><p class="lead" style="margin:0">Silakan coba: setujui, ubah, atau tolak. Datanya hanya contoh.</p></div>
+    <div class="count"><b id="n">0</b> dari 5 selesai</div>
+  </div>
+  <div class="bar"><i id="bar"></i></div>
+  <div id="list"></div>
+  <div class="final" id="final">Brief hari ini selesai. Hasilnya disimpan sebagai bahan brief besok.</div>
+</section>
+
+<section>
+  <h2>Rancangan agen</h2>
+  <p class="lead">Rancangan Kabarin dalam lima poin.</p>
+  <div class="bp">
+    <div class="row"><h3>Nama sistem</h3><p><b>Kabarin.</b> Pengingat harian yang membantu kamu tetap ingat siapa yang perlu dihubungi.</p></div>
+    <div class="row"><h3>Masalah yang diatasi</h3><p>Catatan tentang tiap orang berserakan, follow-up terlambat, pesan terasa seragam, dan mengirim pesan massal berisiko membuat akun dibatasi.</p></div>
+    <div class="row"><h3>Solo atau tim</h3><p><b>Tim.</b> Kalau satu agen harus mengerjakan semuanya sendiri, kesalahan lebih mudah lolos. Karena itu pekerjaannya dibagi ke empat agen, masing-masing dengan satu tugas, sehingga hasilnya lebih rapi.</p></div>
+    <div class="row"><h3>Anggota dan cara kerja</h3><div>
+      <div class="chain"><span class="node">1. Orchestrator</span><span class="arr">→</span><span class="node">2. Scorer</span><span class="arr">→</span><span class="node">3. Writer</span><span class="arr">→</span><span class="node">4. Guard</span><span class="arr">→</span><span class="node h">5. Kamu setujui</span></div>
+      <p>Polanya gabungan. <b>Orchestrator</b> (pola Supervisor) membaca permintaan lalu memilih jalur. Untuk brief harian, jalurnya <b>Sequential Chain</b>, yaitu estafet dari satu agen ke agen berikutnya, dan kamu yang memutuskan di ujung (Human-in-the-Loop).</p>
+      <ul><li><b>Orchestrator:</b> membaca permintaan. Brief pagi menjalankan seluruh estafet, pertanyaan mendadak seperti “Ayu belum membalas” langsung ke Writer lalu Guard, dan catatan baru langsung disimpan ke memori.</li><li><b>Scorer:</b> memilih lima kontak untuk hari ini beserta alasannya.</li><li><b>Writer:</b> menulis draf pesan dengan gaya bahasamu.</li><li><b>Guard:</b> menahan pesan yang mendesak, berlebihan, atau melewati batas harian.</li></ul>
+    </div></div>
+    <div class="row"><h3>Isi memori</h3><div>
+      <p>Kabarin menyimpan ringkasan, bukan seluruh isi chat. Memori jangka panjang ini memakai konsep Mem0.</p>
+      <div class="chips"><span>Konteks tiap orang</span><span>Gaya bahasamu</span><span>Aturan kerja</span><span>Hasil tiap pesan</span></div>
+      <p style="margin-top:10px">Nomor WhatsApp dan data yang pasti disimpan di Supabase. Mem0 hanya menyimpan ringkasan konteks, tanpa nomor telepon asli. Supabase mengurus hitungan yang pasti, seperti jeda hari. Pencarian berdasarkan makna (vector) membantu menemukan orang yang pernah bercerita sedang butuh sesuatu, walaupun kata-katanya berbeda.</p>
+      <div class="chips"><span>WhatsApp</span><span>n8n</span><span>Supabase</span><span>Mem0</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <h2>Pertanyaan yang sering muncul</h2>
+  <p class="lead">Kabarin masih tahap rancangan, jadi jawaban di bawah menjelaskan cara kerja yang direncanakan.</p>
+  <details><summary>Apakah Kabarin tersambung ke WhatsApp saya?</summary><p>Tidak. Kabarin tidak membaca chat kamu dan tidak mengirim pesan atas namamu. Kamu menerima brief di chat Kabarin, lalu mengirim pesan sendiri lewat WhatsApp biasa.</p></details>
+  <details><summary>Apakah ini sama dengan CRM?</summary><p>Dasarnya mirip, karena sama-sama menyimpan data kontak. Bedanya, CRM menunggu kamu membukanya, sedangkan Kabarin yang aktif memberi tahu siapa yang perlu dihubungi dan menyiapkan drafnya.</p></details>
+  <details><summary>Datanya disimpan di mana?</summary><p>Rencananya, data kontak disimpan di database yang dipisah per pengguna, dan ringkasan obrolan di memori terpisah tanpa nomor telepon asli. Datanya milikmu dan bisa dihapus kapan saja.</p></details>
+  <details><summary>Sudah bisa dipakai?</summary><p>Belum penuh. Saat ini baru rancangan dan demo di halaman ini. Akses awal dibuka terbatas untuk beberapa orang yang mau mencoba dan memberi masukan.</p></details>
+  <details><summary>Berapa biayanya?</summary><p>Belum ditetapkan. Harga akan ditentukan bersama pengguna awal.</p></details>
+</section>
+
+<footer>
+  <h2>Mulai dari satu brief pagi</h2>
+  <a class="btn" href="https://wa.me/6285717862034?text=Halo%2C%20saya%20mau%20minta%20akses%20awal%20Kabarin" target="_blank" rel="noopener">Minta Akses Awal</a>
+  <div class="ft">Bagian dari After Gajian Builder<br>Built with AI · AI Builder Bootcamp Showcase<br>© 2026 Kabarin</div>
+</footer>
+
+</div>
+<script>
+const chat=document.getElementById('chat'),dots=document.getElementById('dots');let busy=false;
+const S={
+1:{u:"Hari ini aku sebaiknya menghubungi siapa?",a:"Selamat pagi! Hari ini ada lima orang yang saya sarankan. Yang pertama Dimas: sudah 9 hari sejak kalian membahas tambahan penghasilan. Drafnya sudah saya siapkan.<br><span class='note'>Menunggu persetujuanmu</span>"},
+2:{u:"Ayu belum membalas sudah 4 hari. Sebaiknya bagaimana?",a:"Menurut catatan, Ayu sempat menjawab “nanti ya”, jadi sebaiknya nggak ditagih. Coba kirim pesan yang santai saja: “Aku nggak buru-buru, kabari saja kalau sudah enak untuk lanjut ngobrol yaa.”<br><span class='note'>Pemeriksaan: lolos</span>"},
+3:{u:"Tolong buatkan pesan promo untuk Rizky, harus diambil minggu ini.",a:"Pesan ini saya tahan. Isinya terlalu mendesak dan berlebihan, apalagi Rizky sudah dua kali tidak membalas. Saran saya, beri jeda 14 hari, lalu kirim sapaan ringan tanpa ajakan apa pun.<br><span class='note' style='color:var(--rose)'>Pemeriksaan: ditahan</span>"}
+};
+function add(t,c){const d=document.createElement('div');d.className='msg '+c;d.innerHTML=t;chat.insertBefore(d,dots);chat.scrollTop=chat.scrollHeight}
+function run(i){if(busy)return;busy=true;add(S[i].u,'me');dots.style.display='block';chat.scrollTop=chat.scrollHeight;
+setTimeout(()=>{dots.style.display='none';add(S[i].a,'ai');busy=false},1400)}
+
+const P=[
+{n:"Dimas",w:"Sudah 9 hari sejak membahas tambahan penghasilan.",d:"Halo Dimas, aku masih kepikiran obrolan kita soal tambahan penghasilan. Kalau ada waktu 10 menit minggu ini, boleh aku ceritakan gambaran sederhananya?",g:"Lolos pemeriksaan"},
+{n:"Ayu",w:"Menjawab “nanti ya” empat hari lalu dan belum ada kabar lagi.",d:"Hai Ayu, nggak perlu buru-buru yaa. Kabari saja kapan enaknya kita lanjut ngobrol.",g:"Lolos, nadanya santai"},
+{n:"Pak Hendra",w:"Berulang tahun besok. Terakhir berkomunikasi tiga minggu lalu.",d:"Selamat ulang tahun, Pak Hendra! Semoga sehat dan lancar selalu. Kapan-kapan kita ngopi lagi ya, Pak.",g:"Lolos, tanpa unsur promosi"},
+{n:"Sari",w:"Baru pindah kerja, dan hal itu belum pernah dibahas.",d:"Sari, selamat yaa atas pekerjaan barunya! Bagaimana kabarnya sejauh ini?",g:"Lolos pemeriksaan"},
+{n:"Rizky",w:"Dua kali follow-up belum dibalas, jadi batasnya sudah tercapai.",d:"",g:"Ditahan, beri jeda 14 hari",h:true}
+];
+let done=0;const list=document.getElementById('list');
+P.forEach((p,i)=>{const el=document.createElement('div');el.className='item';el.id='it'+i;
+el.innerHTML=`<div class="who"><b>${p.n}</b><span class="chip ${p.h?'hold':'ok'}">${p.g}</span></div><div class="why">${p.w}</div>`+
+(p.h?`<div class="acts"><button class="go" onclick="fin(${i},'Dijeda 14 hari. Rizky nggak akan muncul di brief sampai jeda selesai.','skip')">Jeda 14 hari</button></div>`
+:`<textarea class="draft" id="d${i}" readonly aria-label="Draf untuk ${p.n}">${p.d}</textarea><div class="acts"><button class="go" onclick="fin(${i},'Disetujui. Pesan kamu kirim sendiri lewat WhatsApp, dan hasilnya dicatat.','done')">Setujui</button><button onclick="ed(${i},this)">Ubah</button><button onclick="fin(${i},'Ditolak. Kabarin akan belajar dari keputusan ini.','skip')">Tolak</button></div>`)+`<div class="status" id="s${i}"></div>`;
+list.appendChild(el)});
+function ed(i,b){const t=document.getElementById('d'+i);t.readOnly=!t.readOnly;b.textContent=t.readOnly?'Ubah':'Simpan';if(!t.readOnly)t.focus()}
+function fin(i,m,c){const it=document.getElementById('it'+i);if(it.dataset.f)return;it.dataset.f=1;it.classList.add(c);
+it.querySelectorAll('button').forEach(b=>b.disabled=true);const t=document.getElementById('d'+i);if(t)t.readOnly=true;
+document.getElementById('s'+i).textContent=m;done++;document.getElementById('n').textContent=done;
+document.getElementById('bar').style.width=(done/P.length*100)+'%';if(done===P.length)document.getElementById('final').style.display='block'}
+</script>
+</body>
+</html>
